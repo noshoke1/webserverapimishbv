@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Вход</title>
+</head>
+<body>
+    <h1>Вход</h1>
+    {% if message %}
+        <p>{{ message }}</p>
+    {% endif %}
+    <form action="/login" method="POST">
+        <label for="username">Имя пользователя:</label><br>
+        <input type="text" id="username" name="username" required><br><br>
+        <label for="password">Пароль:</label><br>
+        <input type="password" id="password" name="password" required>
+        <input type="checkbox" onclick="togglePassword()"> Показать пароль<br><br>
+        <button type="submit">Войти</button>
+    </form>
+    <p>Еще не зарегистрированы? <a href="/register">Зарегистрируйтесь</a></p>
+
+    <script>
+        function togglePassword() {
+            var passwordInput = document.getElementById("password");
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+            } else {
+                passwordInput.type = "password";
+            }
+        }
+    </script>
+</body>
+</html>

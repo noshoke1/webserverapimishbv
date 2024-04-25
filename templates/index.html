@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Мессенджер</title>
+</head>
+<body>
+    <h1>Добро пожаловать, {{ session.username }}!</h1>
+    <h2>Отправить сообщение</h2>
+    <form id="messageForm">
+        <label for="receiver">Получатель:</label>
+        <input type="text" id="receiver" name="receiver" required><br><br>
+        <label for="message">Сообщение:</label><br>
+        <textarea id="message" name="message" rows="4" cols="50" required></textarea><br><br>
+        <button type="submit">Отправить</button>
+    </form>
+    <h2>Сообщения</h2>
+    <ul id="messageList"></ul>
+
+    <script>
+        window.onload = function() {
+            document.getElementById('messageForm').onsubmit = function(event) {
+                event.preventDefault();
+                sendMessage();
+            };
+            loadMessages();
+        };
+
+        function sendMessage() {
+            var receiver = document.getElementById('receiver').value;
+            var message = document.getElementById('message').value;
+
+            fetch('/send_message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    receiver: receiver,
+                    message: message
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                loadMessages();
+            });
+        }
+
+        function loadMessages() {
+            fetch('/get_messages')
+            .then(response => response.json())
+            .then(messages => {
+                var messageList = document.getElementById('messageList');
+                messageList.innerHTML = '';
+                messages.forEach(msg => {
+                    var li = document.createElement('li');
+                    li.textContent = 'От ' + msg.sender + ': ' + msg.message;
+                    messageList.appendChild(li);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
